@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 
-// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
+// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib 需要链接文件
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
@@ -28,13 +28,13 @@ int __cdecl main(int argc, char **argv)
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;
 
-    // Validate the parameters
+    // Validate the parameters 验证参数
     if (argc != 2) {
         printf("usage: %s server-name\n", argv[0]);
         return 1;
     }
 
-    // Initialize Winsock
+    // Initialize Winsock 初始化
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
     if (iResult != 0) {
         printf("WSAStartup failed with error: %d\n", iResult);
@@ -46,7 +46,7 @@ int __cdecl main(int argc, char **argv)
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
 
-    // Resolve the server address and port
+    // Resolve the server address and port 解析服务器地址和端口
     iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
     if ( iResult != 0 ) {
         printf("getaddrinfo failed with error: %d\n", iResult);
@@ -54,10 +54,10 @@ int __cdecl main(int argc, char **argv)
         return 1;
     }
 
-    // Attempt to connect to an address until one succeeds
+    // Attempt to connect to an address until one succeeds 尝试连接到一个地址直到成功
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
 
-        // Create a SOCKET for connecting to server
+        // Create a SOCKET for connecting to server 创建一个用于连接服务器的socket
         ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
             ptr->ai_protocol);
         if (ConnectSocket == INVALID_SOCKET) {
@@ -66,7 +66,7 @@ int __cdecl main(int argc, char **argv)
             return 1;
         }
 
-        // Connect to server.
+        // Connect to server. 连接服务器
         iResult = connect( ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
         if (iResult == SOCKET_ERROR) {
             closesocket(ConnectSocket);
@@ -84,7 +84,7 @@ int __cdecl main(int argc, char **argv)
         return 1;
     }
 
-    // Send an initial buffer
+    // Send an initial buffer 发送初试缓冲区
     iResult = send( ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
     if (iResult == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
@@ -95,7 +95,7 @@ int __cdecl main(int argc, char **argv)
 
     printf("Bytes Sent: %ld\n", iResult);
 
-    // shutdown the connection since no more data will be sent
+    // shutdown the connection since no more data will be sent 关闭连接，发送数据终止
     iResult = shutdown(ConnectSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
         printf("shutdown failed with error: %d\n", WSAGetLastError());
@@ -104,7 +104,7 @@ int __cdecl main(int argc, char **argv)
         return 1;
     }
 
-    // Receive until the peer closes the connection
+    // Receive until the peer closes the connection 接收直到对等方关闭连接
     do {
 
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
@@ -117,7 +117,7 @@ int __cdecl main(int argc, char **argv)
 
     } while( iResult > 0 );
 
-    // cleanup
+    // cleanup 清理
     closesocket(ConnectSocket);
     WSACleanup();
 

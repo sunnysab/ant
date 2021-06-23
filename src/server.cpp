@@ -1,11 +1,3 @@
-//
-// Created by Administrator on 2021/6/23.
-//
-
-//
-// Created by Administrator on 2021/6/23.
-//
-
 #undef UNICODE
 
 #define WIN32_LEAN_AND_MEAN
@@ -38,7 +30,7 @@ int __cdecl main(void)
     char recvbuf[DEFAULT_BUFLEN];
     int recvbuflen = DEFAULT_BUFLEN;
 
-    // Initialize Winsock
+    // Initialize Winsock 初始化
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
     if (iResult != 0) {
         printf("WSAStartup failed with error: %d\n", iResult);
@@ -51,7 +43,7 @@ int __cdecl main(void)
     hints.ai_protocol = IPPROTO_TCP;
     hints.ai_flags = AI_PASSIVE;
 
-    // Resolve the server address and port
+    // Resolve the server address and port 解析服务器地址和端口
     iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
     if ( iResult != 0 ) {
         printf("getaddrinfo failed with error: %d\n", iResult);
@@ -59,7 +51,7 @@ int __cdecl main(void)
         return 1;
     }
 
-    // Create a SOCKET for connecting to server
+    // Create a SOCKET for connecting to server 创建一个用于连接服务器的socket
     ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     if (ListenSocket == INVALID_SOCKET) {
         printf("socket failed with error: %ld\n", WSAGetLastError());
@@ -68,7 +60,7 @@ int __cdecl main(void)
         return 1;
     }
 
-    // Setup the TCP listening socket
+    // Setup the TCP listening socket 设置TCP监听socket
     iResult = bind( ListenSocket, result->ai_addr, (int)result->ai_addrlen);
     if (iResult == SOCKET_ERROR) {
         printf("bind failed with error: %d\n", WSAGetLastError());
@@ -88,7 +80,7 @@ int __cdecl main(void)
         return 1;
     }
 
-    // Accept a client socket
+    // Accept a client socket 接收服务器socket请求
     ClientSocket = accept(ListenSocket, NULL, NULL);
     if (ClientSocket == INVALID_SOCKET) {
         printf("accept failed with error: %d\n", WSAGetLastError());
@@ -97,17 +89,17 @@ int __cdecl main(void)
         return 1;
     }
 
-    // No longer need server socket
+    // No longer need server socket 不需要服务器socket
     closesocket(ListenSocket);
 
-    // Receive until the peer shuts down the connection
+    // Receive until the peer shuts down the connection 接收直到对端关闭连接
     do {
 
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
 
-            // Echo the buffer back to the sender
+            // Echo the buffer back to the sender 将缓冲区回显给发送方
             iSendResult = send( ClientSocket, recvbuf, iResult, 0 );
             if (iSendResult == SOCKET_ERROR) {
                 printf("send failed with error: %d\n", WSAGetLastError());
@@ -128,7 +120,7 @@ int __cdecl main(void)
 
     } while (iResult > 0);
 
-    // shutdown the connection since we're done
+    // shutdown the connection since we're done 完成后关闭连接
     iResult = shutdown(ClientSocket, SD_SEND);
     if (iResult == SOCKET_ERROR) {
         printf("shutdown failed with error: %d\n", WSAGetLastError());
@@ -137,7 +129,7 @@ int __cdecl main(void)
         return 1;
     }
 
-    // cleanup
+    // cleanup 清理
     closesocket(ClientSocket);
     WSACleanup();
 
