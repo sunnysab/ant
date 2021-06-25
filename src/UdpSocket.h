@@ -1,18 +1,26 @@
 //
 // Created by sunnysab on 2021/6/23.
 //
-
-#ifndef ANT_UDPSOCKET_H
-#define ANT_UDPSOCKET_H
+#include <iostream>
+#include <winsock2.h>
 
 
 class UdpSocket
 {
+private:
+    SOCKET  s_ = INVALID_SOCKET;
+    sockaddr_in  remote_addr_ {};
 
 public:
-    explicit UdpSocket(std::string  local_address, unsigned short  port);
+    UdpSocket();
+    UdpSocket(const std::string  &remote_address, unsigned short  port);
+    void  connect(const std::string  &local_address, unsigned short port);
+    bool  bind(const std::string  &local_address, unsigned short port);
+    size_t  sendto(const vector<char> &buffer, const std::string &remote_address, unsigned short port);
+    size_t  send(const vector<char> &buffer);
+    size_t  recvfrom(vector<char> &buffer, const std::string &remote_address, unsigned short port);
+    size_t  recvfrom(vector<char> &buffer)
 
-    int  send(const char *buffer, unsigned int  size);
 };
 
 
