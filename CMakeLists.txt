@@ -18,4 +18,6 @@ add_executable(hryS test/hryServer.cpp)
 
 # Unit test targets
 add_executable(UdpSocketTest test/UdpSocketTest.cpp src/UdpSocket.cpp)
+add_executable(VecStreamTest test/VecStreamTest.cpp src/protocol/VecStream.cpp)
 target_link_libraries(UdpSocketTest gtest gtest_main ws2_32)
+target_link_libraries(VecStreamTest gtest gtest_main)
