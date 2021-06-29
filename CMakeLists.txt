@@ -11,10 +11,16 @@ add_subdirectory(lib/googletest)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 # Application targets
-add_executable(client src/client.cpp)
-add_executable(server src/server.cpp)
-add_executable(hryC test/hryClient.cpp)
-add_executable(hryS test/hryServer.cpp)
+add_executable(client src/main/client.cpp
+        src/UdpSocket.cpp
+        src/AntClient.cpp
+        src/protocol/Protocol.cpp)
+add_executable(server src/main/server.cpp
+        src/UdpSocket.cpp
+        src/AntServer.cpp
+        src/protocol/Protocol.cpp)
+target_link_libraries(client ws2_32)
+target_link_libraries(server ws2_32)
 
 # Unit test targets
 add_executable(UdpSocketTest test/UdpSocketTest.cpp src/UdpSocket.cpp)
