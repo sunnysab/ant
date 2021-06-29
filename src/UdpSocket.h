@@ -40,16 +40,16 @@ public:
     UdpSocket();
 
     // Construct an Udp socket with local address by bind() function.
-    UdpSocket(const std::string &remote_address, port_t port);
+    UdpSocket(const std::string &local_addr, port_t port);
 
     // Set remote host and port, to avoid filling address each call.
-    void connect(const std::string &local_address, port_t port);
+    void connect(const std::string &local_addr, port_t port);
 
     // Bind local address and port. */
-    void bind(const std::string &local_address, port_t port);
+    void bind(const std::string &local_addr, port_t port);
 
     // Send datagram to the given address and port.
-    size_t sendto(const std::vector<byte> &buffer, const std::string &remote_address, port_t remote_port);
+    size_t sendto(const std::vector<byte> &buffer, const std::string &remote_addr, const port_t remote_port);
 
     // Send datagram to the set address and port.
     size_t send(const std::vector<byte> &buffer);

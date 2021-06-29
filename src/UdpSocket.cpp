@@ -8,10 +8,10 @@
 #include "UdpSocket.h"
 
 
-UdpSocket::UdpSocket(const std::string &local_address, port_t port)
+UdpSocket::UdpSocket(const std::string &local_addr, port_t port)
         : UdpSocket() {
     // Bind with the address in parameter.
-    this->bind(local_address, port);
+    this->bind(local_addr, port);
 }
 
 UdpSocket::UdpSocket() {
@@ -21,25 +21,26 @@ UdpSocket::UdpSocket() {
     }
 }
 
-void UdpSocket::bind(const std::string &local_address, port_t port) {
-    sockaddr_in  &local_addr = this->local_addr_;
+void UdpSocket::bind(const std::string &local_addr, port_t port) {
+    sockaddr_in &_st_local_addr = this->local_addr_;
 
-    local_addr.sin_family = AF_INET;
-    local_addr.sin_port = htons(port);
-    local_addr.sin_addr.S_un.S_addr = inet_addr(local_address.c_str());
-    if (::bind(this->s_, (sockaddr *) &this->local_addr_, sizeof(sockaddr_in)) == SOCKET_ERROR) {
+    _st_local_addr.sin_family = AF_INET;
+    _st_local_addr.sin_port = htons(port);
+    _st_local_addr.sin_addr.S_un.S_addr = inet_addr(local_addr.c_str());
+    if (::bind(this->s_, (sockaddr *) &_st_local_addr, sizeof(sockaddr_in)) == SOCKET_ERROR) {
         throw std::exception("Error occurred while calling bind().");
     }
 }
 
-size_t UdpSocket::sendto(const std::vector<byte> &buffer, const std::string &remote_address, port_t remote_port) {
-    sockaddr_in dest_addr;
+size_t UdpSocket::sendto(const std::vector<byte> &buffer, const std::string &remote_addr, const port_t remote_port) {
+    sockaddr_in st_dest_addr;
 
-    dest_addr.sin_family = AF_INET;
-    dest_addr.sin_port = htons(remote_port);
-    dest_addr.sin_addr.S_un.S_addr = inet_addr(remote_address.c_str());
+    st_dest_addr.sin_family = AF_INET;
+    st_dest_addr.sin_port = htons(remote_port);
+    st_dest_addr.sin_addr.S_un.S_addr = inet_addr(remote_addr.c_str());
 
-    int sent_size = ::sendto(this->s_, reinterpret_cast<const char *>(&buffer[0]), buffer.size(), 0, (sockaddr *) &dest_addr, sizeof(dest_addr));
+    int sent_size = ::sendto(this->s_, reinterpret_cast<const char *>(&buffer[0]), buffer.size(), 0
+                             , (sockaddr *) &st_dest_addr, sizeof(st_dest_addr));
     if (sent_size == -1) {
         throw std::exception("Error occurred while calling sendto().");
     }
@@ -47,33 +48,33 @@ size_t UdpSocket::sendto(const std::vector<byte> &buffer, const std::string &rem
 }
 
 size_t UdpSocket::send(const std::vector<byte> &buffer) {
-    int sent_size = ::sendto(this->s_, reinterpret_cast<const char *>(&buffer[0]), buffer.size(), 0, (sockaddr *) &(this->remote_addr_)
-                             , sizeof(sockaddr_in));
+    int sent_size = ::sendto(this->s_, reinterpret_cast<const char *>(&buffer[0]), buffer.size(), 0
+                             , (sockaddr *) &(this->remote_addr_), sizeof(sockaddr_in));
     if (sent_size == -1) {
         throw std::exception("Error occurred while calling sendto().");
     }
     return sent_size;
 }
 
-void UdpSocket::connect(const std::string &remote_address, port_t remote_port) {
-    sockaddr_in  &remote_addr = this->remote_addr_;
+void UdpSocket::connect(const std::string &local_addr, port_t remote_port) {
+    sockaddr_in &_st_remote_addr = this->remote_addr_;
 
-    remote_addr.sin_family = AF_INET;
-    remote_addr.sin_port = htons(remote_port);
-    remote_addr.sin_addr.S_un.S_addr = inet_addr(remote_address.c_str());
+    _st_remote_addr.sin_family = AF_INET;
+    _st_remote_addr.sin_port = htons(remote_port);
+    _st_remote_addr.sin_addr.S_un.S_addr = inet_addr(local_addr.c_str());
 }
 
 size_t UdpSocket::recvfrom(std::vector<byte> &buffer, std::string &src_address, port_t &src_port) {
-    sockaddr_in  st_source_addr {};
-    int source_addr_len = sizeof(st_source_addr);
+    sockaddr_in _st_source_addr{};
+    int source_addr_len = sizeof(_st_source_addr);
 
     int recv_size = ::recvfrom(this->s_, reinterpret_cast<char *>(&buffer[0]), buffer.capacity(), 0
-                               , (sockaddr *) &st_source_addr, &source_addr_len);
+                               , (sockaddr *) &_st_source_addr, &source_addr_len);
     if (recv_size < 0) {
         throw std::exception("Error occurred while calling recvfrom().");
     }
-    src_address = inet_ntoa(st_source_addr.sin_addr);
-    src_port = htons(st_source_addr.sin_port);
+    src_address = inet_ntoa(_st_source_addr.sin_addr);
+    src_port = htons(_st_source_addr.sin_port);
     return recv_size;
 }
 
