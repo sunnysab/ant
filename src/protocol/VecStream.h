@@ -8,7 +8,7 @@
 
 
 // Append a string to the vector
-void push_string(std::vector<uint8_t> &out_buf, std::string const &s);
+void push_string(std::vector<uint8_t> &out_buf, const std::string &s);
 
 // Get the string from the vector, with a 16-bit string length on the left of the string.
 // And then move the iterator above the string

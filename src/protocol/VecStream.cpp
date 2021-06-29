@@ -7,7 +7,7 @@
 #include "VecStream.h"
 
 
-void push_string(std::vector<uint8_t> &out_buf, std::string const &s) {
+void push_string(std::vector<uint8_t> &out_buf, const std::string &s) {
     auto string_size = static_cast<uint16_t>(s.size());
     auto buf_size = static_cast<uint16_t>(out_buf.size());
 
