@@ -6,7 +6,7 @@
 #include "RecvResponse.h"
 #include "DataPayload.h"
 #include "VecStream.h"
-#include "DataFrame.h"
+#include "Frame.h"
 
 
 constexpr static uint32_t table[] = {
@@ -45,16 +45,16 @@ constexpr static uint32_t table[] = {
 };
 
 
-DataFrame::DataFrame(seq_type seq, seq_type ack, FrameType type)
+Frame::Frame(seq_type seq, seq_type ack, FrameType type)
         : seq(seq), ack(ack), type(type) {
     void();
 }
 
-void DataFrame::put(Payload *_payload) {
+void Frame::put(Payload *_payload) {
     this->payload = _payload;
 }
 
-std::vector<uint8_t> DataFrame::serialize() const {
+std::vector<uint8_t> Frame::serialize() const {
     std::vector<uint8_t> frame;
 
     push_u32(frame, this->seq);
@@ -68,7 +68,7 @@ std::vector<uint8_t> DataFrame::serialize() const {
     return frame;
 }
 
-DataFrame DataFrame::deserialize(std::vector<uint8_t> &frame) {
+Frame Frame::deserialize(std::vector<uint8_t> &frame) {
     auto it = frame.begin();
     auto seq = get_u32(it);
     auto ack = get_u32(it);
@@ -95,12 +95,12 @@ DataFrame DataFrame::deserialize(std::vector<uint8_t> &frame) {
             break;
     }
 
-    DataFrame result(seq, ack, static_cast<FrameType>(type));
+    Frame result(seq, ack, static_cast<FrameType>(type));
     result.payload = p_payload;
     return result;
 }
 
-bool DataFrame::operator==(const DataFrame &other) const {
+bool Frame::operator==(const Frame &other) const {
     return this->seq == other.seq
            && this->ack == other.ack
            && this->type == other.type

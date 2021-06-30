@@ -29,7 +29,7 @@ using seq_type = uint32_t;
 struct Payload;
 
 
-struct DataFrame {
+struct Frame {
 public:
     // Frame sequence number.
     uint32_t seq;
@@ -43,9 +43,9 @@ public:
     Payload *payload = nullptr;
 
 public:
-    DataFrame() = default;
+    Frame() = default;
 
-    DataFrame(seq_type seq, seq_type ack, FrameType type);
+    Frame(seq_type seq, seq_type ack, FrameType type);
 
     // Push a section on the back of the frame.
     void put(Payload *_payload);
@@ -54,9 +54,9 @@ public:
     std::vector<uint8_t> serialize(void) const;
 
     // Deserialize DataFrame from binary content
-    static DataFrame deserialize(std::vector<uint8_t> &frame);
+    static Frame deserialize(std::vector<uint8_t> &frame);
 
-    bool operator==(const DataFrame &other) const;
+    bool operator==(const Frame &other) const;
 };
 
 

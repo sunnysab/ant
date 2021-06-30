@@ -45,9 +45,13 @@ add_executable(PayloadTest
         test/PayloadTest.cpp
         ${ProtocolFiles})
 add_executable(DataFrameTest
-        test/DataFrameTest.cpp
+        test/FrameTest.cpp
         ${ProtocolFiles})
+add_executable(ReadBufferTest
+        src/ReadBuffer.cpp
+        test/ReadBufferTest.cpp)
 target_link_libraries(UdpSocketTest gtest gtest_main ws2_32)
 target_link_libraries(VecStreamTest gtest gtest_main)
 target_link_libraries(PayloadTest gtest gtest_main)
 target_link_libraries(DataFrameTest gtest gtest_main)
+target_link_libraries(ReadBufferTest gtest gtest_main)
