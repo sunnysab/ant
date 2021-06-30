@@ -19,9 +19,11 @@ public:
     void serialize_append(std::vector<uint8_t> &out) override;
 
     // Deserialize from binary.
-    static void deserialize(bool response, RecvResponse **parsed_section);
+    static void deserialize(std::vector<uint8_t> &buffer, RecvResponse **parsed_section);
 
-    bool operator==(const RecvResponse &other) const;
+    bool operator==(const Payload *other) const override;
+
+    bool operator==(const Payload &other) const override;
 };
 
 

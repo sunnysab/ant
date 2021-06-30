@@ -3,6 +3,8 @@
 //
 
 #include "RequestPayload.h"
+#include "RecvResponse.h"
+#include "DataPayload.h"
 #include "VecStream.h"
 #include "DataFrame.h"
 
@@ -48,8 +50,8 @@ DataFrame::DataFrame(seq_type seq, seq_type ack, FrameType type)
     void();
 }
 
-void DataFrame::put(Payload *payload) {
-    this->payload = payload;
+void DataFrame::put(Payload *_payload) {
+    this->payload = _payload;
 }
 
 std::vector<uint8_t> DataFrame::serialize() const {
@@ -83,11 +85,13 @@ DataFrame DataFrame::deserialize(std::vector<uint8_t> &frame) {
     // Detect frame type
     switch (static_cast<FrameType>(type)) {
         case FrameType::SendRequest:
-            RequestPayload::deserialize(payload, reinterpret_cast<RequestPayload **>(&p_payload));
+            RequestPayload::deserialize(payload, reinterpret_cast<RequestPayload *>(p_payload));
             break;
         case FrameType::RecvResponse:
+            RecvResponse::deserialize(payload, reinterpret_cast<RecvResponse *>(p_payload));
             break;
         case FrameType::Data:
+            DataPayload::deserialize(payload, reinterpret_cast<DataPayload *>(p_payload));
             break;
     }
 

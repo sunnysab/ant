@@ -48,7 +48,7 @@ public:
     DataFrame(seq_type seq, seq_type ack, FrameType type);
 
     // Push a section on the back of the frame.
-    void put(Payload *payload);
+    void put(Payload *_payload);
 
     // Convert DataFrame to binary content
     std::vector<uint8_t> serialize(void) const;

@@ -69,10 +69,10 @@ TEST(TestDataPayload, serialize) {
 
 TEST(TestDataPayload, deserialize) {
     DataPayload expected;
-    std::string test_content = "helloworld!";
-    std::vector<uint8_t> test(test_content.begin(), test_content.end());
+    std::string s = "helloworld!";
+    std::vector<uint8_t> content(s.begin(), s.end());
 
-    expected.content = test;
+    expected.content = content;
 
     std::vector<uint8_t> buffer = {0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x77, 0x6F, 0x72, 0x6C, 0x64, 0x21};
     DataPayload *result = nullptr;
@@ -84,13 +84,12 @@ TEST(TestDataPayload, deserialize) {
 }
 
 // Test received response
-TEST(RecvResponse, serialize) {
+TEST(TestRecvResponse, serialize) {
     RecvResponse payload;
-
     payload.response = true;
 
     std::vector<uint8_t> buffer = payload.serialize();
-    std::vector<uint8_t> expected = {'\0', '\0', '\0', true};
+    std::vector<uint8_t> expected = {0x00, 0x00, 0x00, 0x01};
     ASSERT_EQ(buffer, expected);
 
     buffer = {};
@@ -98,12 +97,11 @@ TEST(RecvResponse, serialize) {
     ASSERT_EQ(buffer, expected);
 }
 
-TEST(RecvResponse, deserialize) {
+TEST(TestRecvResponse, deserialize) {
     RecvResponse expected;
-
     expected.response = true;
 
-    bool buffer = true;
+    std::vector<uint8_t> buffer = {0x00, 0x00, 0x00, 0x01};
     RecvResponse *result = nullptr;
 
     RecvResponse::deserialize(buffer, &result);

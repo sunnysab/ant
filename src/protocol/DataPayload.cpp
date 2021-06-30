@@ -29,6 +29,12 @@ void DataPayload::deserialize(std::vector<uint8_t> &content, DataPayload **parse
     payload->content = content;
 }
 
-bool DataPayload::operator==(const DataPayload &other) const {
-    return this->content == other.content;
+bool DataPayload::operator==(const Payload &other) const {
+    const auto o = dynamic_cast<const DataPayload &>(other);
+    return this->content == o.content;
+}
+
+bool DataPayload::operator==(const Payload *other) const {
+    const auto *o = dynamic_cast<const DataPayload *>(other);
+    return this->content == o->content;
 }

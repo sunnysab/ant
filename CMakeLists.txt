@@ -10,22 +10,39 @@ include_directories(src)
 add_subdirectory(lib/googletest)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
+
+set(ProtocolFiles
+        src/protocol/RequestPayload.cpp
+        src/protocol/DataPayload.cpp
+        src/protocol/RecvResponse.cpp
+        src/protocol/VecStream.cpp)
+
+
 # Application targets
 add_executable(client src/main/client.cpp
         src/UdpSocket.cpp
-        src/AntClient.cpp)
+        src/AntClient.cpp
+        ${ProtocolFiles})
 add_executable(server src/main/server.cpp
         src/UdpSocket.cpp
-        src/AntServer.cpp)
+        src/AntServer.cpp
+        ${ProtocolFiles})
 target_link_libraries(client ws2_32)
 target_link_libraries(server ws2_32)
 
 # Unit test targets
-add_executable(UdpSocketTest test/UdpSocketTest.cpp src/UdpSocket.cpp)
-add_executable(VecStreamTest test/VecStreamTest.cpp src/protocol/VecStream.cpp)
-add_executable(PayloadTest test/PayloadTest.cpp src/protocol/RequestPayload.cpp src/protocol/DataPayload.cpp src/protocol/RecvResponse.cpp src/protocol/VecStream.cpp)
-add_executable(DataFrameTest test/DataFrameTest.cpp src/protocol/DataFrame.cpp src/protocol/VecStream.cpp
-        src/protocol/RequestPayload.cpp)
+add_executable(UdpSocketTest
+        test/UdpSocketTest.cpp
+        src/UdpSocket.cpp)
+add_executable(VecStreamTest
+        test/VecStreamTest.cpp
+        ${ProtocolFiles})
+add_executable(PayloadTest
+        test/PayloadTest.cpp
+        ${ProtocolFiles})
+add_executable(DataFrameTest
+        test/DataFrameTest.cpp
+        ${ProtocolFiles})
 target_link_libraries(UdpSocketTest gtest gtest_main ws2_32)
 target_link_libraries(VecStreamTest gtest gtest_main)
 target_link_libraries(PayloadTest gtest gtest_main)

@@ -8,7 +8,7 @@
 
 struct DataPayload final : Payload {
 public:
-    //file content
+    // File content
     std::vector<uint8_t> content;
 
 public:
@@ -21,6 +21,8 @@ public:
     // Deserialize from binary.
     static void deserialize(std::vector<uint8_t> &content, DataPayload **parsed_section);
 
-    bool operator==(const DataPayload &other) const;
+    bool operator==(const Payload *other) const override;
+
+    bool operator==(const Payload &other) const override;
 };
 
