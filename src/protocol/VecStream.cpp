@@ -44,7 +44,7 @@ uint8_t get_u8(std::vector<uint8_t>::iterator &it) {
 
 void push_u16(std::vector<uint8_t> &output_buffer, const uint16_t x) {
     push_u8(output_buffer, x >> 8);
-    push_u8(output_buffer, x & 127);
+    push_u8(output_buffer, x & 255);
 }
 
 uint16_t get_u16(std::vector<uint8_t>::iterator &it) {
