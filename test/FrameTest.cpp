@@ -2,13 +2,13 @@
 // Created by sunnysab on 2021/6/30.
 //
 
-#include "protocol/DataFrame.h"
+#include "protocol/Frame.h"
 #include "protocol/RequestPayload.h"
 #include "gtest/gtest.h"
 
 
 TEST(TestDataFrame, serialize) {
-    DataFrame data_frame;
+    Frame data_frame;
     auto *payload = new RequestPayload();
 
     payload->client_name = "AntClient";
@@ -35,7 +35,7 @@ TEST(TestDataFrame, serialize) {
 
 
 TEST(TestDataFrame, deserialize) {
-    DataFrame expected;
+    Frame expected;
     auto *payload = new RequestPayload();
 
     payload->client_name = "AntClient";
@@ -56,6 +56,6 @@ TEST(TestDataFrame, deserialize) {
             0x01, 0x00,
             0x00, 0x01, 0x00, 0x04, 0x00
     };
-    auto result = DataFrame::deserialize(buffer);
+    auto result = Frame::deserialize(buffer);
     ASSERT_EQ(result, expected);
 }
