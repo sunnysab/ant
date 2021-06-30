@@ -52,7 +52,7 @@ void DataFrame::put(Payload *payload) {
     this->payload = payload;
 }
 
-std::vector<uint8_t> DataFrame::serialize(void) const {
+std::vector<uint8_t> DataFrame::serialize() const {
     std::vector<uint8_t> frame;
 
     push_u32(frame, this->seq);
@@ -63,6 +63,7 @@ std::vector<uint8_t> DataFrame::serialize(void) const {
     auto crc = calc_crc32(binary_payload);
     push_u32(frame, crc);
     frame.insert(frame.end(), binary_payload.begin(), binary_payload.end());
+    return frame;
 }
 
 DataFrame DataFrame::deserialize(std::vector<uint8_t> &frame) {
@@ -74,21 +75,36 @@ DataFrame DataFrame::deserialize(std::vector<uint8_t> &frame) {
     std::vector<uint8_t> payload(it, frame.end());
     Payload *p_payload = nullptr;
 
-    // TODO: Check crc32
+    auto calculated_crc32 = calc_crc32(payload);
+    if (calculated_crc32 != crc32) {
+        throw std::exception("Invalid payload: CRC32 check failed.");
+    }
 
     // Detect frame type
-    if (static_cast<FrameType>(type) == FrameType::SendRequest)
-        RequestPayload::deserialize(payload, reinterpret_cast<RequestPayload **>(&p_payload));
-    else
-        void(); // TODO
+    switch (static_cast<FrameType>(type)) {
+        case FrameType::SendRequest:
+            RequestPayload::deserialize(payload, reinterpret_cast<RequestPayload **>(&p_payload));
+            break;
+        case FrameType::RecvResponse:
+            break;
+        case FrameType::Data:
+            break;
+    }
 
     DataFrame result(seq, ack, static_cast<FrameType>(type));
-    result.crc32 = crc32;
     result.payload = p_payload;
     return result;
 }
 
-uint32_t DataFrame::calc_crc32(const std::vector<uint8_t> &content) {
+bool DataFrame::operator==(const DataFrame &other) const {
+    return this->seq == other.seq
+           && this->ack == other.ack
+           && this->type == other.type
+           // Ignore crc32 field.
+           && *(other.payload) == *(this->payload);
+}
+
+uint32_t calc_crc32(const std::vector<uint8_t> &content) {
     auto size = content.size();
     uint32_t crc = 0;
 

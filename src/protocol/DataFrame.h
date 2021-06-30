@@ -38,12 +38,9 @@ public:
     // Frame type.
     FrameType type;
     // Checksum
-    uint32_t crc32{};
+    // uint32_t crc32;
     // Sections
-    Payload *payload{};
-
-private:
-    static uint32_t calc_crc32(const std::vector<uint8_t> &content);
+    Payload *payload = nullptr;
 
 public:
     DataFrame() = default;
@@ -58,4 +55,10 @@ public:
 
     // Deserialize DataFrame from binary content
     static DataFrame deserialize(std::vector<uint8_t> &frame);
+
+    bool operator==(const DataFrame &other) const;
 };
+
+
+/* Calculates CRC32 number for vector<byte> */
+uint32_t calc_crc32(const std::vector<uint8_t> &content);

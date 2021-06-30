@@ -22,5 +22,9 @@ public:
     static void deserialize(std::vector<uint8_t> &content, Payload **payload) {
         throw std::exception("You can not use deserialize function in abstract Payload.");
     }
+
+    virtual bool operator==(const Payload *other) const = 0;
+
+    virtual bool operator==(const Payload &other) const = 0;
 };
 
