@@ -29,4 +29,6 @@ public:
 
     // Deserialize from binary.
     static void deserialize(std::vector<uint8_t> &content, RequestPayload **parsed_section);
+
+    bool operator==(const RequestPayload &other) const;
 };

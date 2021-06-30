@@ -39,3 +39,11 @@ void RequestPayload::deserialize(std::vector<uint8_t> &content, RequestPayload *
     payload->block_size = get_u16(it);
 }
 
+bool RequestPayload::operator==(const RequestPayload &other) const {
+    return this->client_name == other.client_name
+           && this->file_name == other.file_name
+           && this->file_id == other.file_id
+           && this->file_size == other.file_size
+           && this->block_size == other.block_size;
+}
+
