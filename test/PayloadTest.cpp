@@ -6,6 +6,7 @@
 #include <vector>
 #include "protocol/RequestPayload.h"
 #include "protocol/DataPayload.h"
+#include "protocol/RecvResponse.h"
 #include "gtest/gtest.h"
 
 
@@ -78,6 +79,35 @@ TEST(TestDataPayload, deserialize) {
     DataPayload *result = nullptr;
 
     DataPayload::deserialize(buffer, &result);
+    ASSERT_EQ(*result, expected);
+
+    delete result;
+}
+
+// Test received response
+TEST(RecvResponse, serialize) {
+    RecvResponse payload;
+
+    payload.response = true;
+
+    std::vector<uint8_t> buffer = payload.serialize();
+    std::vector<uint8_t> expected = {'\0', '\0', '\0', true};
+    ASSERT_EQ(buffer, expected);
+
+    buffer = {};
+    payload.serialize_append(buffer);
+    ASSERT_EQ(buffer, expected);
+}
+
+TEST(RecvResponse, deserialize) {
+    RecvResponse expected;
+
+    expected.response = true;
+
+    bool buffer = true;
+    RecvResponse *result = nullptr;
+
+    RecvResponse::deserialize(buffer, &result);
     ASSERT_EQ(*result, expected);
 
     delete result;

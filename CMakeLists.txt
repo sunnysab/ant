@@ -23,7 +23,7 @@ target_link_libraries(server ws2_32)
 # Unit test targets
 add_executable(UdpSocketTest test/UdpSocketTest.cpp src/UdpSocket.cpp)
 add_executable(VecStreamTest test/VecStreamTest.cpp src/protocol/VecStream.cpp)
-add_executable(PayloadTest test/PayloadTest.cpp src/protocol/RequestPayload.cpp src/protocol/DataPayload.cpp src/protocol/VecStream.cpp)
+add_executable(PayloadTest test/PayloadTest.cpp src/protocol/RequestPayload.cpp src/protocol/DataPayload.cpp src/protocol/RecvResponse.cpp src/protocol/VecStream.cpp)
 add_executable(DataFrameTest test/DataFrameTest.cpp src/protocol/DataFrame.cpp src/protocol/VecStream.cpp)
 target_link_libraries(UdpSocketTest gtest gtest_main ws2_32)
 target_link_libraries(VecStreamTest gtest gtest_main)
