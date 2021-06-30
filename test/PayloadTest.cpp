@@ -5,7 +5,9 @@
 #include <string>
 #include <vector>
 #include "protocol/RequestPayload.h"
+#include "protocol/DataPayload.h"
 #include "gtest/gtest.h"
+
 
 
 TEST(TestRequestPayload, serialize) {
@@ -48,3 +50,35 @@ TEST(TestRequestPayload, deserialize) {
     delete result;
 }
 
+TEST(TestDataPayload, serialize) {
+    DataPayload payload;
+
+    std::string test_content = "helloworld!";
+    std::vector<uint8_t> test(test_content.begin(), test_content.end());
+
+    payload.content = test;
+
+    std::vector<uint8_t> buffer = payload.serialize();
+    std::vector<uint8_t> expected = {0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x77, 0x6F, 0x72, 0x6C, 0x64, 0x21};
+    ASSERT_EQ(buffer, expected);
+
+    buffer = {};
+    payload.serialize_append(buffer);
+    ASSERT_EQ(buffer, expected);
+}
+
+TEST(TestDataPayload, deserialize) {
+    DataPayload expected;
+    std::string test_content = "helloworld!";
+    std::vector<uint8_t> test(test_content.begin(), test_content.end());
+
+    expected.content = test;
+
+    std::vector<uint8_t> buffer = {0x68, 0x65, 0x6C, 0x6C, 0x6F, 0x77, 0x6F, 0x72, 0x6C, 0x64, 0x21};
+    DataPayload *result = nullptr;
+
+    DataPayload::deserialize(buffer, &result);
+    ASSERT_EQ(*result, expected);
+
+    delete result;
+}
