@@ -39,11 +39,22 @@ void RequestPayload::deserialize(std::vector<uint8_t> &content, RequestPayload *
     payload->block_size = get_u16(it);
 }
 
-bool RequestPayload::operator==(const RequestPayload &other) const {
-    return this->client_name == other.client_name
-           && this->file_name == other.file_name
-           && this->file_id == other.file_id
-           && this->file_size == other.file_size
-           && this->block_size == other.block_size;
+bool RequestPayload::operator==(const Payload *other) const {
+    const auto *o = dynamic_cast<const RequestPayload *>(other);
+
+    return this->client_name == o->client_name
+           && this->file_name == o->file_name
+           && this->file_id == o->file_id
+           && this->file_size == o->file_size
+           && this->block_size == o->block_size;
 }
 
+bool RequestPayload::operator==(const Payload &other) const {
+    const auto o = dynamic_cast<const RequestPayload &>(other);
+
+    return this->client_name == o.client_name
+           && this->file_name == o.file_name
+           && this->file_id == o.file_id
+           && this->file_size == o.file_size
+           && this->block_size == o.block_size;
+}
