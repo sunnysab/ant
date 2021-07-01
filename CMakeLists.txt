@@ -16,6 +16,7 @@ add_subdirectory(lib/progress_bar)
 include_directories(lib/progress_bar/include)
 
 set(ProtocolFiles
+        src/protocol/Frame.cpp
         src/protocol/RequestPayload.cpp
         src/protocol/DataPayload.cpp
         src/protocol/RecvResponse.cpp
@@ -26,10 +27,12 @@ set(ProtocolFiles
 add_executable(client src/main/client.cpp
         src/UdpSocket.cpp
         src/AntClient.cpp
+        src/ReadBuffer.cpp
         ${ProtocolFiles})
 add_executable(server src/main/server.cpp
         src/UdpSocket.cpp
         src/AntServer.cpp
+        src/ReadBuffer.cpp
         ${ProtocolFiles})
 target_link_libraries(client ws2_32)
 target_link_libraries(server ws2_32)

@@ -14,11 +14,11 @@ public:
     // Name of file
     std::string file_name;
     // Request file id set by sender.
-    uint32_t file_id;
+    uint32_t file_id = 0x00;
     // The size of file given by sender.
     uint32_t file_size;
     // Block size to cut the file.
-    uint16_t block_size;
+    uint16_t block_size = 1024;
 
 public:
     // Serialize current request section to binary format.

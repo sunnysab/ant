@@ -85,13 +85,13 @@ Frame Frame::deserialize(std::vector<uint8_t> &frame) {
     // Detect frame type
     switch (static_cast<FrameType>(type)) {
         case FrameType::SendRequest:
-            RequestPayload::deserialize(payload, reinterpret_cast<RequestPayload *>(p_payload));
+            RequestPayload::deserialize(payload, reinterpret_cast<RequestPayload **>(&p_payload));
             break;
         case FrameType::RecvResponse:
-            RecvResponse::deserialize(payload, reinterpret_cast<RecvResponse *>(p_payload));
+            RecvResponse::deserialize(payload, reinterpret_cast<RecvResponse **>(&p_payload));
             break;
         case FrameType::Data:
-            DataPayload::deserialize(payload, reinterpret_cast<DataPayload *>(p_payload));
+            DataPayload::deserialize(payload, reinterpret_cast<DataPayload **>(&p_payload));
             break;
     }
 
