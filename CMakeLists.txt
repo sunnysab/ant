@@ -11,9 +11,9 @@ add_subdirectory(lib/googletest)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 
-# Progress Bar Component
-add_subdirectory(lib/progress_bar)
-include_directories(lib/progress_bar/include)
+## Progress Bar Component
+#add_subdirectory(lib/progress_bar)
+#include_directories(lib/progress_bar/include)
 
 set(ProtocolFiles
         src/protocol/Frame.cpp
@@ -52,7 +52,8 @@ add_executable(DataFrameTest
         ${ProtocolFiles})
 add_executable(ReadBufferTest
         src/ReadBuffer.cpp
-        test/ReadBufferTest.cpp)
+        src/WriteBuffer.cpp
+        test/BufferTest.cpp)
 target_link_libraries(UdpSocketTest gtest gtest_main ws2_32)
 target_link_libraries(VecStreamTest gtest gtest_main)
 target_link_libraries(PayloadTest gtest gtest_main)
