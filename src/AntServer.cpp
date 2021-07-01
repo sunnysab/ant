@@ -12,12 +12,15 @@
 
 AntServer::AntServer(const std::string &path_) {
     this->out_ = new std::ofstream;
-    this->out_->open(path_, std::ios::out | std::ios::binary);
+    this->file_path_ = path_;
+    this->out_->open(path_, std::ios::out | std::ios::binary | std::ios::trunc);
 
     if (!this->out_->is_open()) {
         std::string msg = (std::string) "Could not open this file: " + strerror(errno);
         throw std::exception(msg.c_str());
     }
+    // this->file_size_ = std::filesystem::file_size(path_);
+    this->buffer_ = new WriteBuffer(this->out_);
 }
 
 void AntServer::listen(const std::string &host, const port_t port) {
@@ -26,13 +29,16 @@ void AntServer::listen(const std::string &host, const port_t port) {
 
 RequestPayload AntServer::wait() {
     auto request_bin = this->socket_.recvfrom();
-    auto request = Frame::deserialize(request_bin.payload);
+    this->socket_.connect(request_bin.host, request_bin.port);
 
+    auto request = Frame::deserialize(request_bin.payload);
+    this->file_size_ = reinterpret_cast<RequestPayload *>(request.payload)->file_size;
     return *dynamic_cast<RequestPayload *>(request.payload);
 }
 
 void AntServer::close() {
     this->socket_.close();
+    // TODO: Memory leak. this->buffer_ is not free now.
 }
 
 void AntServer::write(const std::function<bool(TransferProcess)> &callback) {
@@ -47,17 +53,18 @@ void AntServer::write(const std::function<bool(TransferProcess)> &callback) {
         auto frame = Frame::deserialize(buffer.payload);
         auto content = ((DataPayload *) frame.payload)->content;
 
-        this->buffer_.write(content);
+        this->buffer_->write(content);
         status.completed_size += content.size();
 
         if (!callback(status)) {
             throw std::exception("Process broken because us er cancelled.");
         }
     }
+    this->buffer_->flush();
 }
 
 void AntServer::accept() {
-    Frame data_frame;
+    Frame data_frame(0, 0, FrameType::RecvResponse);
     auto *payload = new RecvResponse();
 
     payload->response = true;
@@ -68,7 +75,7 @@ void AntServer::accept() {
 }
 
 void AntServer::decline() {
-    Frame data_frame;
+    Frame data_frame(0, 0, FrameType::RecvResponse);
     auto *payload = new RecvResponse();
 
     payload->response = false;

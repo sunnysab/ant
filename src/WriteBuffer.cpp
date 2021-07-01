@@ -27,7 +27,9 @@ void WriteBuffer::write_file() {
     auto full_size = WriteBuffer::DefaultBufferSize;
     if (this->buffer_.size() >= full_size / 2)
         return;
+}
 
+void WriteBuffer::flush() {
     auto size_to_write = buffer_.size();
     std::vector<uint8_t> disk_buffer(size_to_write);
 
@@ -36,7 +38,11 @@ void WriteBuffer::write_file() {
         this->buffer_.pop();
     }
     this->out_stream_->write(reinterpret_cast<char *>(disk_buffer.data()), size_to_write);
+    this->out_stream_->flush();
+}
 
+WriteBuffer::~WriteBuffer() {
+    this->flush();
 }
 
 

@@ -23,6 +23,8 @@ protected:
 public:
     WriteBuffer() = default;
 
+    ~WriteBuffer();
+
     // Construct with a file stream
     explicit WriteBuffer(std::ofstream *stream);
 
@@ -31,5 +33,6 @@ public:
 
     void write(const std::vector<uint8_t> &result);
 
+    void flush();
 };
 

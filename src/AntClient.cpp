@@ -12,12 +12,14 @@
 
 AntClient::AntClient(const std::string &path_) {
     this->in_ = new std::ifstream;
+    this->file_path_ = path_;
     this->in_->open(path_, std::ios::in | std::ios::binary);
 
     if (!this->in_->is_open()) {
         std::string msg = (std::string) "Could not open this file: " + strerror(errno);
         throw std::exception(msg.c_str());
     }
+    this->buffer_.open(this->in_);
 }
 
 void AntClient::connect(const std::string &host, const port_t port) {
@@ -94,7 +96,7 @@ void AntClient::send(const std::function<bool(TransferProcess)> &callback) {
         auto *payload = new DataPayload();
         payload->content = disk_buffer;
 
-        Frame frame;
+        Frame frame(0, 0, FrameType::Data);;
         frame.put(payload);
         auto net_buffer = frame.serialize();
 

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <winsock2.h>
+#include "progress_bar.h"
 #include "AntServer.h"
 
 
@@ -23,18 +24,27 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Accept or not? [Y/N]: ";
     char opt = getchar();
-    if (opt != 'Y') {
+    if (opt != 'Y' && opt != 'y') {
         std::cout << "User cancelled.";
         server.decline();
         return 0;
     }
 
+    bmc::progress_bar pb{
+            0,  // min, also initial value
+            request.file_size,  // max
+            80,  // width in percent of screen (including percentage and time)
+            true,  // auto increment when outputting
+            true   // show time at the end
+    };
     server.accept();
-    server.write([](TransferProcess process) -> bool {
-        std::cout << process.completed_size / process.total_size << std::endl;
-
+    server.write([&pb](TransferProcess process) -> bool {
+        pb.set(process.completed_size);
+        std::cout << pb;
         return true;
     });
+    std::cout << pb;
+    std::cout << "Transfer finished." << std::endl;
 
     WSACleanup();
     return 0;

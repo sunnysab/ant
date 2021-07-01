@@ -3,8 +3,8 @@
 //
 
 #include <stdexcept>
-#include <winsock2.h>
 #include <iostream>
+#include <winsock2.h>
 #include "UdpSocket.h"
 #include "gtest/gtest.h"
 

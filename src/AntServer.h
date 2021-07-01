@@ -24,7 +24,7 @@ protected:
 
     /* File operation related */
     std::ofstream *out_ = nullptr;
-    WriteBuffer buffer_;
+    WriteBuffer *buffer_;
     size_t file_size_;
     std::string file_path_;
 

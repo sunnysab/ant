@@ -4,10 +4,14 @@
 
 #include <iostream>
 #include <filesystem>
+#include <winsock2.h>
 #include "progress_bar.h"
 #include "AntClient.h"
 
 int main(int argc, char *argv[]) {
+    WSAData data{};
+    WSAStartup(MAKEWORD(2, 2), &data);
+
     std::string file_path = "./test/test-case/pure-text.txt";
     size_t file_size = std::filesystem::file_size(file_path);
 
@@ -26,7 +30,6 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    std::cout << pb;
     client.send([&pb](TransferProcess process) -> bool {
         pb.set(process.completed_size);
         std::cout << pb;
@@ -35,5 +38,6 @@ int main(int argc, char *argv[]) {
     std::cout << pb;
 
     client.close();
+    WSACleanup();
     return 0;
 }

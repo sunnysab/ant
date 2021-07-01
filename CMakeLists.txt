@@ -24,16 +24,18 @@ set(ProtocolFiles
 
 
 # Application targets
-add_executable(client src/main/client.cpp
+add_executable(client
         src/UdpSocket.cpp
         src/AntClient.cpp
         src/ReadBuffer.cpp
-        ${ProtocolFiles})
-add_executable(server src/main/server.cpp
+        ${ProtocolFiles}
+        src/main/client.cpp)
+add_executable(server
         src/UdpSocket.cpp
         src/AntServer.cpp
         src/WriteBuffer.cpp
-        ${ProtocolFiles})
+        ${ProtocolFiles}
+        src/main/server.cpp)
 target_link_libraries(client ws2_32)
 target_link_libraries(server ws2_32)
 

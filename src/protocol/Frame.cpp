@@ -93,6 +93,8 @@ Frame Frame::deserialize(std::vector<uint8_t> &frame) {
         case FrameType::Data:
             DataPayload::deserialize(payload, reinterpret_cast<DataPayload **>(&p_payload));
             break;
+        default:
+            throw std::exception("Unexpected frame type.");
     }
 
     Frame result(seq, ack, static_cast<FrameType>(type));
