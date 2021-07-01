@@ -32,7 +32,7 @@ add_executable(client src/main/client.cpp
 add_executable(server src/main/server.cpp
         src/UdpSocket.cpp
         src/AntServer.cpp
-        src/ReadBuffer.cpp
+        src/WriteBuffer.cpp
         ${ProtocolFiles})
 target_link_libraries(client ws2_32)
 target_link_libraries(server ws2_32)

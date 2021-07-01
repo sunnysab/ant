@@ -4,30 +4,44 @@
 
 #pragma once
 
-#include <fstream>
+#include <functional>
 #include <string>
+#include <string_view>
+#include "protocol/RequestPayload.h"
 #include "UdpSocket.h"
+#include "WriteBuffer.h"
 
-
-using port_t = unsigned short;
+struct TransferProcess {
+    size_t total_size;
+    size_t completed_size;
+};
 
 
 class AntServer {
 protected:
-    // Udp socket handle
+    // Udp Socket object
     UdpSocket socket_;
-    // Output handle
-    std::ofstream output_file_;
-    // Directory of saving received file.
-    std::string save_directory_;
-    // Auto accept
-    bool auto_accept_ = false;
+
+    /* File operation related */
+    std::ofstream *out_ = nullptr;
+    WriteBuffer buffer_;
+    size_t file_size_;
+    std::string file_path_;
+
+    TransferProcess status_;
 
 public:
-    AntServer() = default;
+    AntServer(const std::string &path_);
 
-    AntServer(const std::string &local_addr, const port_t port);
+    void listen(const std::string &host, const port_t port);
 
-    void set_save_directory(const std::string &path);
+    RequestPayload wait();
 
+    void accept();
+
+    void decline();
+
+    void write(const std::function<bool(TransferProcess)> &callback);
+
+    void close(void);
 };
