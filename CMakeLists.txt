@@ -12,8 +12,8 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 
 ## Progress Bar Component
-#add_subdirectory(lib/progress_bar)
-#include_directories(lib/progress_bar/include)
+add_subdirectory(lib/progress_bar)
+include_directories(lib/progress_bar/include)
 
 set(ProtocolFiles
         src/protocol/Frame.cpp
